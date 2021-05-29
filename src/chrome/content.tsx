@@ -10,12 +10,13 @@ window.addEventListener(
       const result = await fetch(target).then(async data => {
         return await data.text()
       })
+      console.log('result', result)
       injectApp(result)
     }
   }
 )
 
-function App({ text }) {
+function App({ text }: any) {
   return (
     <div className="App">
       <header className="App-header">
@@ -35,7 +36,7 @@ function App({ text }) {
   );
 }
 
-function injectApp(result) {
+function injectApp(result: any) {
   const newDiv = document.createElement("div");
   newDiv.setAttribute("id", "chromeExtensionReactApp");
   document.body.appendChild(newDiv);
