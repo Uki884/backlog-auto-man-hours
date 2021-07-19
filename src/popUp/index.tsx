@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import './App.css';
+import './index.css';
 
-function App() {
+function PopUp() {
   const [authKey, setAuthKey] = useState('')
 
   const setStorage = (payload: any) => {
@@ -13,9 +13,7 @@ function App() {
 
   const getStorage = (key: string) => {
     let value_data = ''
-    console.log('key', key)
     chrome.storage.sync.get(key, function (value) {
-      console.log('value', value)
       value_data = value.key;
     });
     setAuthKey(value_data)
@@ -38,13 +36,9 @@ function App() {
 
   return (
     <div className="App">
-      Quick Translate
-      <div className="authKey">
-        apiKey:
-        <input type="text" value={authKey} onChange={(e) => setStorage({ authKey: e.target.value })}></input>
-      </div>
+      sample
     </div>
   );
 }
 
-export default App;
+export default PopUp;
