@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { calcManHours } from '../utils';
 
 function Main() {
 
@@ -20,7 +21,8 @@ function Main() {
     () => {
       console.log('effetm', startDate, limitDate);
       if (startDate && limitDate) {
-        setEstimatedHours(String(222))
+        const manHours = calcManHours(startDate, limitDate, { holidayType: 5 })
+        setEstimatedHours(String(manHours))
       }
     },
     [startDate, limitDate]
