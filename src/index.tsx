@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import PopUp from './popUp';
+import PopUp from './pages/popUp';
 
 ReactDOM.render(
   <React.StrictMode>

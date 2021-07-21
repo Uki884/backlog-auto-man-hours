@@ -1,0 +1,13 @@
+.popup {
+  text-align: center;
+  min-height: 300px;
+  width: 300px;
+  padding: 20px;
+  &__item {
+    margin-bottom: 20px;
+    &--title {
+      font-weight: bold;
+      text-align: left;
+    }
+  }
+}

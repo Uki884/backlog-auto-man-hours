@@ -1,17 +1,5 @@
 import dayjs, { Dayjs } from 'dayjs'
-
-const HolidayType = {
-  // 土日祝日
-  SUNDAYS_SATURDAYS_AND_HOLIDAYS: 1,
-  // 日祝
-  SUNDAYS_AND_HOLIDAYS: 2,
-  // 日のみ
-  SUNDAYS: 3,
-  // 土のみ
-  SATURDAYS: 4,
-  // 日土
-  SUNDAYS_AND_SATURDAYS: 5
-}
+import { HOLIDAY_TYPE } from '../constants'
 
 const getWorkDays = (startDay: string, endDay: string, holidayType: number) => {
   console.log('startDay', startDay, 'endDay', endDay)
@@ -21,17 +9,17 @@ const getWorkDays = (startDay: string, endDay: string, holidayType: number) => {
   for (let date = start; date <= end; date = date.add(1, 'day')){
     //TODO: 祝日を判定する
     // 日曜
-    if (holidayType === HolidayType.SUNDAYS) {
+    if (holidayType === HOLIDAY_TYPE.SUNDAYS) {
       if (isSunday(date)) continue
       result.push(date.format('YYYY/MM/DD'))
     }
     // 土曜
-    if (holidayType === HolidayType.SATURDAYS) {
+    if (holidayType === HOLIDAY_TYPE.SATURDAYS) {
       if (isSaturday(date)) continue
       result.push(date.format('YYYY/MM/DD'))
     }
     // 土日
-    if (holidayType === HolidayType.SUNDAYS_AND_SATURDAYS) {
+    if (holidayType === HOLIDAY_TYPE.SUNDAYS_AND_SATURDAYS) {
       if (isSunday(date) || isSaturday(date)) continue
       result.push(date.format('YYYY/MM/DD'))
     }
