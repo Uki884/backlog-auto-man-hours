@@ -8,7 +8,8 @@
     "default_title": "Open the popup"
   },
   "web_accessible_resources": [
-    "./static/js/content.js"
+    "./static/js/content.js",
+    "./static/js/main.js"
   ],
   "content_scripts": [
     {
@@ -16,7 +17,8 @@
         "<all_urls>"
       ],
       "js": [
-        "./static/js/content.js"
+        "./static/js/content.js",
+        "./static/js/main.js"
       ]
     }
   ],

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BaseRadio } from '../../components/atoms/radio/BaseRadio';
 import { BaseTextField } from '../../components/atoms/input/BaseTextField';
 import { HOLIDAY_TYPE } from '../../constants';
@@ -12,9 +12,7 @@ const holidayTypes = [
   { label: '土日', value: HOLIDAY_TYPE.SUNDAYS_AND_SATURDAYS },
 ]
 
-// TODO: マウント時にchromeからデータを取得してセットする
-
-function PopUp() {
+const PopUp = () => {
   const [holidayType, setHolidayType] = useState(1)
   const [workHour, setWorkHour] = useState(8)
   const [includeFirstDay, setIncludeFirstDay] = useState(1)
@@ -25,29 +23,41 @@ function PopUp() {
     });
   }
 
-  const getStorage = (key: string) => {
-    let value_data = ''
-    chrome.storage.sync.get(key, function (value) {
-      value_data = value.key;
-    });
-    return value_data
-  }
-
   // 休日のタイプを更新
   const updateHolidayType = (value: number) => {
     setStorage({ holidayType: value })
     setHolidayType(value)
   }
 
+  // 1日の作業時間更新
   const updateWorkHour = (value: number) => {
     setStorage({ workHour: value })
     setWorkHour(value)
   }
 
+  // 初日を含めるか更新
   const updateIncludeFirstDay = (value: number) => {
     setIncludeFirstDay(value)
-    setStorage({ includeFirstDay: value === 1 })
+    setStorage({ includeFirstDay: value })
   }
+
+  useEffect(() => {
+    chrome.storage.sync.get(null, ((data) => {
+      // 休日タイプをセット
+      if (data.holidayType) {
+        setHolidayType(data.holidayType)
+      }
+      // 初日を含めるかをセット
+      if (data.includeFirstDay) {
+        console.log('data.includeFirstDay', data.includeFirstDay)
+        setIncludeFirstDay(data.includeFirstDay)
+      }
+      // 1日の作業時間をセット
+      if (data.workHour) {
+        setWorkHour(data.workHour)
+      }
+    }))
+  }, [])
 
   return (
     <div className="popup">
@@ -64,8 +74,8 @@ function PopUp() {
       </div>
       <div className="popup__item">
         <div className="popup__item--title">初日を含める</div>
-        <BaseRadio value={1} selected={includeFirstDay} label="含める" onChange={(e: any) => updateIncludeFirstDay(Number(e.target.value))} />
-        <BaseRadio value={2} selected={includeFirstDay} label="含めない" onChange={(e: any) => updateIncludeFirstDay(Number(e.target.value))} />
+        <BaseRadio value={1} selected={includeFirstDay} label="はい" onChange={(e: any) => updateIncludeFirstDay(Number(e.target.value))} />
+        <BaseRadio value={2} selected={includeFirstDay} label="いいえ" onChange={(e: any) => updateIncludeFirstDay(Number(e.target.value))} />
       </div>
     </div>
   );

@@ -27,13 +27,13 @@ const getWorkDays = (startDay: string, endDay: string, holidayType: number) => {
   return result.length
 }
 
-export const calcManHours = (startDay: string, endDay: string, options: { oneDayHour?: number, holidayType: number }) => {
-  const defaultOption = { oneDayHour: 8 }
+export const calcManHours = (startDay: string, endDay: string, options: { workHour?: number, holidayType: number }) => {
+  const defaultOption = { workHour: 8 }
   const opt = { ...defaultOption, ...options }
-  const oneDayHour = opt.oneDayHour;
+  const workHour = opt.workHour;
   const workDays = getWorkDays(startDay, endDay, options.holidayType)
   console.log('workDays', workDays)
-  return workDays * oneDayHour
+  return workDays * workHour
 }
 
 const isSunday = (date: Dayjs) => {
