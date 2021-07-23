@@ -1,5 +1,5 @@
 {
-  "name": "Backlog Auto ManHours",
+  "name": "Backlog Auto Work Hours",
   "description": "開始日と期限日を計算して予定時間を自動で入力します。",
   "version": "1.0",
   "manifest_version": 2,
