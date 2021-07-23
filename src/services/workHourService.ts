@@ -26,7 +26,6 @@ export class WorkHourService {
   calcManHours = (startDay: string, endDay: string, options: CalcManHoursOptions) => {
     const defaultOption = { workHour: 8 }
     const opt = { ...defaultOption, ...options }
-    console.log('opt', opt)
     const workHour = opt.workHour;
     const workDays = this.getWorkDays(startDay, endDay, options.holidayType)
     const resultWorkDays = options.includeFirstDay === 1 ? workDays : workDays - 1

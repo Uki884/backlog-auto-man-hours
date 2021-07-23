@@ -7,7 +7,7 @@ const Main = () => {
   const [startDate, setStartDate] = React.useState('')
   const [limitDate, setLimitDate] = React.useState('')
   const [holidayType, setHolidayType] = React.useState(1)
-  const [workHour, setWorkHour] = React.useState(0)
+  const [workHour, setWorkHour] = React.useState(8)
   const [includeFirstDay, setIncludeFirstDay] = React.useState(1)
   const startDateRef = document.getElementById('startDate') as HTMLInputElement;
   const limitDateRef = document.getElementById('limitDate') as HTMLInputElement;
@@ -77,9 +77,9 @@ const Main = () => {
   startDateRef?.addEventListener("blur", (event: any) => setStartDate(event.target.value));
   limitDateRef?.addEventListener('input', (event: any) => setLimitDate(event.target.value));
   limitDateRef?.addEventListener("blur", (event: any) => setLimitDate(event.target.value));
-  return(<div></div>)
+  return(<></>)
 }
 
-const app = document.createElement('div');
-document.body && document.body.appendChild(app);
-ReactDOM.render(<Main />, app);
+if (document.body) {
+  ReactDOM.render(<Main />, document.body.appendChild(document.createElement('div')));
+}

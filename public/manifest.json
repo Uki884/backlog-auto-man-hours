@@ -8,8 +8,7 @@
     "default_title": "Open the popup"
   },
   "web_accessible_resources": [
-    "./static/js/content.js",
-    "./static/js/main.js"
+    "./static/js/content.js"
   ],
   "content_scripts": [
     {
@@ -17,19 +16,17 @@
         "<all_urls>"
       ],
       "js": [
-        "./static/js/content.js",
-        "./static/js/main.js"
+        "./static/js/content.js"
       ]
     }
   ],
   "permissions": [
-    "tabs",
     "storage"
   ],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "icons": {
-    "16": "logo192.png",
-    "48": "logo192.png",
-    "128": "logo192.png"
+    "16": "Backlog_icon.png",
+    "48": "Backlog_icon.png",
+    "128": "Backlog_icon.png"
   }
 }
