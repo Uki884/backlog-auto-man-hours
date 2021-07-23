@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { calcManHours } from '../../utils';
+import WorkHourService from '../../services/workHourService'
 
 const Main = () => {
 
@@ -8,6 +8,7 @@ const Main = () => {
   const [limitDate, setLimitDate] = React.useState('')
   const [holidayType, setHolidayType] = React.useState(1)
   const [workHour, setWorkHour] = React.useState(0)
+  const [includeFirstDay, setIncludeFirstDay] = React.useState(1)
   const startDateRef = document.getElementById('startDate') as HTMLInputElement;
   const limitDateRef = document.getElementById('limitDate') as HTMLInputElement;
 
@@ -21,7 +22,6 @@ const Main = () => {
 
   chrome.storage.onChanged.addListener(function (changes, namespace) {
     if (namespace === "sync") {
-      console.log('changes', changes)
       // 休日のタイプが更新されたらstateも更新する
       if (changes.holidayType) {
         setHolidayType(changes.holidayType.newValue)
@@ -30,10 +30,12 @@ const Main = () => {
       if (changes.workHour) {
         setWorkHour(changes.workHour.newValue)
       }
+      if (changes.includeFirstDay) {
+        setIncludeFirstDay(changes.includeFirstDay.newValue)
+      }
     }
   });
 
-  // ここで営業日を計算して工数をセットしたい
   React.useEffect(
     () => {
       chrome.storage.sync.get(null, ((data) => {
@@ -41,27 +43,43 @@ const Main = () => {
         data.workHour && setWorkHour(data.workHour)
         // 休日タイプセット
         data.holidayType && setHolidayType(data.holidayType)
+        // 初日を含めるかセット
+        data.includeFirstDay && setIncludeFirstDay(data.includeFirstDay)
       }))
+      // 開始日と終了日が登録されている場合は工数を計算してセットする
       if (startDate && limitDate) {
-        const manHours = calcManHours(startDate, limitDate, { workHour, holidayType })
+        const manHours = WorkHourService.calcManHours(startDate, limitDate, { workHour, holidayType, includeFirstDay })
         setEstimatedHours(String(manHours))
       }
     },
-    [startDate, limitDate, holidayType, workHour]
+    [startDate, limitDate, holidayType, workHour, includeFirstDay]
   );
 
   React.useEffect(() => {
-    startDateRef.value && setStartDate(startDateRef.value)
-    limitDateRef.value && setLimitDate(limitDateRef.value)
-  }, [startDateRef.value, limitDateRef.value])
+    setTimeout(() => {
+      startDateRef.value && setStartDate(startDateRef.value)
+      limitDateRef.value && setLimitDate(limitDateRef.value)
+    }, 1000)
+  }, [startDateRef, limitDateRef])
+
+  React.useEffect(() => {
+    // 日本の祝日を取得する
+    const fn = async ()=> {
+      const result = await fetch('https://holidays-jp.github.io/api/v1/date.json')
+      const data = await result.json()
+      const holidays = Object.entries(data).map(([key, value]) => key)
+      WorkHourService.setHolidays(holidays)
+    }
+    fn()
+  }, [])
 
   startDateRef?.addEventListener('input', (event: any) => setStartDate(event.target.value));
   startDateRef?.addEventListener("blur", (event: any) => setStartDate(event.target.value));
   limitDateRef?.addEventListener('input', (event: any) => setLimitDate(event.target.value));
   limitDateRef?.addEventListener("blur", (event: any) => setLimitDate(event.target.value));
-  return (<div></div>)
+  return(<div></div>)
 }
 
 const app = document.createElement('div');
-document.body.appendChild(app);
+document.body && document.body.appendChild(app);
 ReactDOM.render(<Main />, app);

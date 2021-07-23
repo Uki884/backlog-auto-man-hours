@@ -18,7 +18,6 @@ const PopUp = () => {
   const [includeFirstDay, setIncludeFirstDay] = useState(1)
 
   const setStorage = (payload: any) => {
-    console.log('payload', payload)
     chrome.storage.sync.set(payload, function () {
     });
   }
@@ -49,7 +48,6 @@ const PopUp = () => {
       }
       // 初日を含めるかをセット
       if (data.includeFirstDay) {
-        console.log('data.includeFirstDay', data.includeFirstDay)
         setIncludeFirstDay(data.includeFirstDay)
       }
       // 1日の作業時間をセット
