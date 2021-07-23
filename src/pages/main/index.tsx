@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import WorkHourService from '../../services/workHourService'
+import { injectScript } from '../../utils'
 
 const Main = () => {
   const [startDate, setStartDate] = React.useState('')
@@ -15,7 +16,14 @@ const Main = () => {
   const setEstimatedHours = (value: string) => {
     const target: HTMLInputElement = document.getElementById('estimatedHours') as HTMLInputElement;
     if (target) {
-      target.value = value
+      var event = new Event('input', { bubbles: true });
+      // knokout.jsを使っているらしいのでdomにjsを仕込んで更新する。以下参考
+      // https://github.com/nulab/backlog-power-ups/blob/master/plugins/auto-resolution/auto-resolution.js
+      setTimeout(() => {
+        injectScript(`ko.contextFor(document.getElementById('estimatedHours')).$data.estimatedHours.value(${value})`);
+      }, 1000);
+      target.dispatchEvent(event);
+      console.log('target.value', target.value)
     }
   }
 
