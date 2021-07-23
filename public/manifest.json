@@ -1,6 +1,6 @@
 {
   "name": "Backlog Auto ManHours",
-  "description": "バックログの予定時間を開始日と期限日を自動で計算して入力します。",
+  "description": "開始日と期限日を計算して予定時間を自動で入力します。",
   "version": "1.0",
   "manifest_version": 2,
   "browser_action": {
