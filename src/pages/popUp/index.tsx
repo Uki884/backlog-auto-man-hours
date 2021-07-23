@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { BaseRadio } from '../../components/atoms/radio/BaseRadio';
-import { BaseTextField } from '../../components/atoms/input/BaseTextField';
 import { HOLIDAY_TYPE } from '../../constants';
+import { Form, Radio, Input, Checkbox } from 'semantic-ui-react'
 import './index.scss';
 
 const holidayTypes = [
@@ -59,22 +58,29 @@ const PopUp = () => {
 
   return (
     <div className="popup">
-      <div className="popup__item">
-        <div className="popup__item--title">休日設定</div>
-        {holidayTypes.map(item => {
-          return <BaseRadio value={item.value} selected={holidayType} label={item.label} onChange={(e) => updateHolidayType(Number(e.target ? e.target.value : null))} />
-        })}
-      </div>
-      {/* セレクトボックスかラジオボタンにする */}
-      <div className="popup__item">
-        <div className="popup__item--title">作業時間</div>
-        <BaseTextField value={workHour} label="1日の作業時間" onChange={(e) => updateWorkHour(Number(e.target.value))} />
-      </div>
-      <div className="popup__item">
-        <div className="popup__item--title">初日を含める</div>
-        <BaseRadio value={1} selected={includeFirstDay} label="はい" onChange={(e: any) => updateIncludeFirstDay(Number(e.target.value))} />
-        <BaseRadio value={2} selected={includeFirstDay} label="いいえ" onChange={(e: any) => updateIncludeFirstDay(Number(e.target.value))} />
-      </div>
+      <Form>
+        <div className="popup__item">
+          <div className="popup__item--title">休日設定</div>
+          {holidayTypes.map(item => {
+            return(
+            <Form.Field>
+              <Radio value={item.value} checked={holidayType === item.value} label={item.label} onChange={(e, {value}: any) => updateHolidayType(Number(value))} />
+            </Form.Field>
+          )})}
+        </div>
+        <div className="popup__item">
+          <div className="popup__item--title">作業時間</div>
+          <Form.Field>
+            <Input value={workHour} label="1日の作業時間" size="mini" onChange={(e, { value }) => updateWorkHour(Number(value))} />
+          </Form.Field>
+        </div>
+        <div className="popup__item">
+          <div className="popup__item--title">初日を含める</div>
+          <Form.Field>
+            <Checkbox value={includeFirstDay === 1 ? 2 : 1} checked={includeFirstDay === 1} onChange={(e: any, { value }) => updateIncludeFirstDay(Number(value))} />
+          </Form.Field>
+        </div>
+      </Form>
     </div>
   );
 }

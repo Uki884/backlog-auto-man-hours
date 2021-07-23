@@ -5,9 +5,11 @@
   padding: 20px;
   &__item {
     margin-bottom: 20px;
+    text-align: left;
     &--title {
       font-weight: bold;
       text-align: left;
+      margin-bottom: 8px;
     }
   }
 }
