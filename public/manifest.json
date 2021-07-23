@@ -8,15 +8,21 @@
     "default_title": "Open the popup"
   },
   "web_accessible_resources": [
-    "./static/js/content.js"
+    "./static/js/main.js"
   ],
   "content_scripts": [
     {
       "matches": [
-        "<all_urls>"
+        "https://*.backlog.jp/view/*",
+        "https://*.backlogtool.com/view/*",
+        "https://*.backlog.com/view/*",
+        "https://*.backlog.jp/add/*",
+        "https://*.backlogtool.com/add/*",
+        "https://*.backlog.com/add/*"
       ],
+      "all_frames": true,
       "js": [
-        "./static/js/content.js"
+        "./static/js/main.js"
       ]
     }
   ],
