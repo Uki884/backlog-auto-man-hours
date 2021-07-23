@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import WorkHourService from '../../services/workHourService'
 
 const Main = () => {
-
   const [startDate, setStartDate] = React.useState('')
   const [limitDate, setLimitDate] = React.useState('')
   const [holidayType, setHolidayType] = React.useState(1)
@@ -57,8 +56,8 @@ const Main = () => {
 
   React.useEffect(() => {
     setTimeout(() => {
-      startDateRef.value && setStartDate(startDateRef.value)
-      limitDateRef.value && setLimitDate(limitDateRef.value)
+      startDateRef && setStartDate(startDateRef.value)
+      limitDateRef && setLimitDate(limitDateRef.value)
     }, 1000)
   }, [startDateRef, limitDateRef])
 
@@ -73,11 +72,11 @@ const Main = () => {
     fn()
   }, [])
 
-  startDateRef?.addEventListener('input', (event: any) => setStartDate(event.target.value));
-  startDateRef?.addEventListener("blur", (event: any) => setStartDate(event.target.value));
-  limitDateRef?.addEventListener('input', (event: any) => setLimitDate(event.target.value));
-  limitDateRef?.addEventListener("blur", (event: any) => setLimitDate(event.target.value));
-  return(<></>)
+  startDateRef?.addEventListener('input', (event: any) => event.target && setStartDate(event.target.value));
+  startDateRef?.addEventListener("blur", (event: any) => event.target && setStartDate(event.target.value));
+  limitDateRef?.addEventListener('input', (event: any) => event.target && setLimitDate(event.target.value));
+  limitDateRef?.addEventListener("blur", (event: any) => event.target && setLimitDate(event.target.value));
+  return(null)
 }
 
 if (document.body) {

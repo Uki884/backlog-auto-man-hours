@@ -53,7 +53,6 @@ export class WorkHourService {
     }
     // 日曜のみ
     if (holidayType === HOLIDAY_TYPE.SUNDAYS) {
-      console.log('isSunday(date)', isSunday(date))
       if (isSunday(date)) continue
       result.push(date.format('YYYY/MM/DD'))
     }

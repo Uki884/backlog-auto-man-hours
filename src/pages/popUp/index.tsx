@@ -62,7 +62,7 @@ const PopUp = () => {
       <div className="popup__item">
         <div className="popup__item--title">休日設定</div>
         {holidayTypes.map(item => {
-          return <BaseRadio value={item.value} selected={holidayType} label={item.label} onChange={(e) => updateHolidayType(Number(e.target.value))} />
+          return <BaseRadio value={item.value} selected={holidayType} label={item.label} onChange={(e) => updateHolidayType(Number(e.target ? e.target.value : null))} />
         })}
       </div>
       {/* セレクトボックスかラジオボタンにする */}
