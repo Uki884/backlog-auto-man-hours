@@ -17,13 +17,12 @@ const Main = () => {
     const target: HTMLInputElement = document.getElementById('estimatedHours') as HTMLInputElement;
     if (target) {
       var event = new Event('input', { bubbles: true });
-      // knokout.jsを使っているらしいのでdomにjsを仕込んで更新する。以下参考
+      // knockout.jsを使っているらしいのでdomにjsを仕込んで更新する。以下参考
       // https://github.com/nulab/backlog-power-ups/blob/master/plugins/auto-resolution/auto-resolution.js
       setTimeout(() => {
         injectScript(`ko.contextFor(document.getElementById('estimatedHours')).$data.estimatedHours.value(${value})`);
       }, 1000);
       target.dispatchEvent(event);
-      console.log('target.value', target.value)
     }
   }
 
