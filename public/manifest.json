@@ -1,7 +1,7 @@
 {
   "name": "Backlog Auto Work Hours",
   "description": "開始日と期限日を計算して予定時間を自動で入力します。",
-  "version": "1.0",
+  "version": "1.1",
   "manifest_version": 2,
   "browser_action": {
     "default_popup": "index.html",
