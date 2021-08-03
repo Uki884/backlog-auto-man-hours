@@ -1,15 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { INCLUDE_FIRST_DAY_TYPE, WORK_DAY_TYPE } from '../../constants';
 import WorkHourService from '../../services/workHourService'
 import { injectScript } from '../../utils'
+import { HOLIDAY_TYPE } from '../../constants/TypeList';
 
 const Main = () => {
   const [startDate, setStartDate] = React.useState('')
   const [limitDate, setLimitDate] = React.useState('')
-  const [holidayType, setHolidayType] = React.useState(1)
+  const [holidayType, setHolidayType] = React.useState(HOLIDAY_TYPE.SUNDAYS_SATURDAYS_AND_HOLIDAYS)
   const [workHour, setWorkHour] = React.useState(8)
-  const [includeFirstDay, setIncludeFirstDay] = React.useState(1)
+  const [includeFirstDay, setIncludeFirstDay] = React.useState(INCLUDE_FIRST_DAY_TYPE.YES)
   const [isInit, setIsInit] = React.useState(true)
+  const [workDays, setWorkDays] = React.useState([WORK_DAY_TYPE.MONDAY, WORK_DAY_TYPE.THURSDAY, WORK_DAY_TYPE.WEDNESDAY, WORK_DAY_TYPE.TUESDAY, WORK_DAY_TYPE.FRIDAY])
   const startDateRef = document.getElementById('startDate') as HTMLInputElement;
   const limitDateRef = document.getElementById('limitDate') as HTMLInputElement;
   const estimatedHoursRef = document.getElementById('estimatedHours') as HTMLInputElement;
@@ -41,34 +44,41 @@ const Main = () => {
       if (changes.includeFirstDay) {
         setIncludeFirstDay(changes.includeFirstDay.newValue)
       }
+      if (changes.workDays) {
+        setWorkDays(changes.workDays.newValue)
+      }
     }
   });
 
   React.useEffect(
     () => {
       if (isInit && estimatedHoursRef && estimatedHoursRef.value) return
-      chrome.storage.sync.get(null, ((data) => {
-        // 1日の作業時間をセット
-        data.workHour && setWorkHour(data.workHour)
-        // 休日タイプセット
-        data.holidayType && setHolidayType(data.holidayType)
-        // 初日を含めるかセット
-        data.includeFirstDay && setIncludeFirstDay(data.includeFirstDay)
-      }))
       startDateRef && setStartDate(startDateRef.value)
       limitDateRef && setLimitDate(limitDateRef.value)
       // 開始日と終了日が登録されている場合は工数を計算してセットする
       if (startDate && limitDate) {
-        const manHours = WorkHourService.calcManHours(startDate, limitDate, { workHour, holidayType, includeFirstDay })
+        const manHours = WorkHourService.calcManHours(startDate, limitDate, { workHour, holidayType, includeFirstDay, workDays })
         setEstimatedHours(String(manHours))
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [startDate, limitDate, holidayType, workHour, includeFirstDay]
+    [startDate, limitDate, holidayType, workHour, includeFirstDay, workDays]
   );
 
   React.useEffect(() => {
-    setIsInit(false)
+    chrome.storage.sync.get(null, ((data) => {
+      // 1日の作業時間をセット
+      data.workHour && setWorkHour(data.workHour)
+      // 休日タイプセット
+      data.holidayType && setHolidayType(data.holidayType)
+      // 初日を含めるかセット
+      data.includeFirstDay && setIncludeFirstDay(data.includeFirstDay)
+      // 稼働日をセット
+      data.workDays && setWorkDays(data.workDays)
+    }))
+    setTimeout(() => {
+      setIsInit(false)
+    }, 2000)
   }, [])
 
   React.useEffect(() => {

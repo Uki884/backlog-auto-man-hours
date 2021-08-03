@@ -8,15 +8,22 @@ export const HOLIDAY_TYPE = {
   // 土のみ
   SATURDAYS: 4,
   // 日土
-  SUNDAYS_AND_SATURDAYS: 5
+  SUNDAYS_AND_SATURDAYS: 5,
+  // 祝日のみ
+  HOLIDAYS: 6,
+  // 休みなし
+  NONE: 7
 }
 
 export const WORK_DAY_TYPE = {
-  MONDAY: 1,
-  TUESDAY: 2,
-  WEDNESDAY: 3,
-  THURSDAY: 4,
-  FRIDAY: 5,
-  SATURDAY: 6,
-  SUNDAY: 7
+  MONDAY: 'monday',
+  TUESDAY: 'tuesday',
+  WEDNESDAY: 'wednesday',
+  THURSDAY: 'thursday',
+  FRIDAY: 'friday',
+}
+
+export const INCLUDE_FIRST_DAY_TYPE = {
+  YES: 1,
+  NO: 2,
 }
