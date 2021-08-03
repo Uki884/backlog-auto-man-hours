@@ -1,12 +1,13 @@
 
 import dayjs from 'dayjs'
 import { HOLIDAY_TYPE } from '../constants'
-import { isSunday, isSaturday } from '../utils'
+import { isSunday, isSaturday, getDayOfWeek } from '../utils'
 
 interface CalcManHoursOptions {
   workHour?: number
   holidayType: number
-  includeFirstDay: number
+  includeFirstDay?: number
+  workDays: string[]
 }
 
 export class WorkHourService {
@@ -27,45 +28,60 @@ export class WorkHourService {
     const defaultOption = { workHour: 8 }
     const opt = { ...defaultOption, ...options }
     const workHour = opt.workHour;
-    const workDays = this.getWorkDays(startDay, endDay, options.holidayType)
-    const resultWorkDays = options.includeFirstDay === 1 ? workDays : workDays - 1
-    return resultWorkDays * workHour
+    const includeHolidayWorkDays = [...Object.assign([], options.workDays), 'sunday', 'saturday']
+    const totalWorkDays = this.getWorkDays(startDay, endDay, { holidayType: options.holidayType, workDays: includeHolidayWorkDays })
+    const resultWorkDays = options.includeFirstDay === 1 ? totalWorkDays : totalWorkDays - 1
+    const result = resultWorkDays * workHour
+    return result >= 0 ? result : 0
   }
 
   // 勤務日数を取得する
-  getWorkDays(startDay: string, endDay: string, holidayType: number) {
+  getWorkDays(startDay: string, endDay: string, { holidayType, workDays }: CalcManHoursOptions) {
   const start = dayjs(startDay);
   const end = dayjs(endDay);
   const result = []
-  for (let date = start; date <= end; date = date.add(1, 'day')){
-    // 日曜と土曜日と祝日
-    if (holidayType === HOLIDAY_TYPE.SUNDAYS_SATURDAYS_AND_HOLIDAYS) {
-      if (isSunday(date)) continue
-      if (isSaturday(date)) continue
-      if (this.isHoliday(date.format('YYYY-MM-DD'))) continue
-      result.push(date.format('YYYY/MM/DD'))
-    }
-    // 日曜と祝日
-    if (holidayType === HOLIDAY_TYPE.SUNDAYS_AND_HOLIDAYS) {
-      if (isSunday(date)) continue
-      if (this.isHoliday(date.format('YYYY-MM-DD'))) continue
-      result.push(date.format('YYYY/MM/DD'))
-    }
-    // 日曜のみ
-    if (holidayType === HOLIDAY_TYPE.SUNDAYS) {
-      if (isSunday(date)) continue
-      result.push(date.format('YYYY/MM/DD'))
-    }
-    // 土曜のみ
-    if (holidayType === HOLIDAY_TYPE.SATURDAYS) {
-      if (isSaturday(date)) continue
-      result.push(date.format('YYYY/MM/DD'))
-    }
-    // 土日
-    if (holidayType === HOLIDAY_TYPE.SUNDAYS_AND_SATURDAYS) {
-      if (isSunday(date) || isSaturday(date)) continue
-      result.push(date.format('YYYY/MM/DD'))
-    }
+    for (let date = start; date <= end; date = date.add(1, 'day')){
+      const day = getDayOfWeek(date)
+      const isWorkingDay = workDays.includes(day);
+      if (isWorkingDay) {
+        // 祝日
+        if (holidayType === HOLIDAY_TYPE.HOLIDAYS) {
+          if (this.isHoliday(date.format('YYYY-MM-DD'))) continue
+          result.push(date.format('YYYY/MM/DD'))
+        }
+        // 日曜と土曜日と祝日
+        if (holidayType === HOLIDAY_TYPE.SUNDAYS_SATURDAYS_AND_HOLIDAYS) {
+          if (isSunday(date)) continue
+          if (isSaturday(date)) continue
+          if (this.isHoliday(date.format('YYYY-MM-DD'))) continue
+          result.push(date.format('YYYY/MM/DD'))
+        }
+        // 日曜と祝日
+        if (holidayType === HOLIDAY_TYPE.SUNDAYS_AND_HOLIDAYS) {
+          if (isSunday(date)) continue
+          if (this.isHoliday(date.format('YYYY-MM-DD'))) continue
+          result.push(date.format('YYYY/MM/DD'))
+        }
+        // 日曜のみ
+        if (holidayType === HOLIDAY_TYPE.SUNDAYS) {
+          if (isSunday(date)) continue
+          result.push(date.format('YYYY/MM/DD'))
+        }
+        // 土曜のみ
+        if (holidayType === HOLIDAY_TYPE.SATURDAYS) {
+          if (isSaturday(date)) continue
+          result.push(date.format('YYYY/MM/DD'))
+        }
+        // 土日
+        if (holidayType === HOLIDAY_TYPE.SUNDAYS_AND_SATURDAYS) {
+          if (isSunday(date) || isSaturday(date)) continue
+          result.push(date.format('YYYY/MM/DD'))
+        }
+        // 休みなし
+        if (holidayType === HOLIDAY_TYPE.NONE) {
+          result.push(date.format('YYYY/MM/DD'))
+        }
+      }
   }
   return result.length
 }
