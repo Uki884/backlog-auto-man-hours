@@ -10,3 +10,13 @@ export const HOLIDAY_TYPE = {
   // 日土
   SUNDAYS_AND_SATURDAYS: 5
 }
+
+export const WORK_DAY_TYPE = {
+  MONDAY: 1,
+  TUESDAY: 2,
+  WEDNESDAY: 3,
+  THURSDAY: 4,
+  FRIDAY: 5,
+  SATURDAY: 6,
+  SUNDAY: 7
+}

@@ -1,20 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { HOLIDAY_TYPE } from '../../constants';
-import { Form, Radio, Input, Checkbox } from 'semantic-ui-react'
+import { HOLIDAY_TYPE, WORK_DAY_TYPE } from '../../constants';
+import { Form, Menu, Input, Checkbox, Select } from 'semantic-ui-react'
 import './index.scss';
 
 const holidayTypes = [
-  { label: '土日祝日', value: HOLIDAY_TYPE.SUNDAYS_SATURDAYS_AND_HOLIDAYS },
-  { label: '日祝', value: HOLIDAY_TYPE.SUNDAYS_AND_HOLIDAYS },
-  { label: '日のみ', value: HOLIDAY_TYPE.SUNDAYS },
-  { label: '土のみ', value: HOLIDAY_TYPE.SATURDAYS },
-  { label: '土日', value: HOLIDAY_TYPE.SUNDAYS_AND_SATURDAYS },
+  { text: '土日祝日', value: HOLIDAY_TYPE.SUNDAYS_SATURDAYS_AND_HOLIDAYS },
+  { text: '日祝', value: HOLIDAY_TYPE.SUNDAYS_AND_HOLIDAYS },
+  { text: '日のみ', value: HOLIDAY_TYPE.SUNDAYS },
+  { text: '土のみ', value: HOLIDAY_TYPE.SATURDAYS },
+  { text: '土日', value: HOLIDAY_TYPE.SUNDAYS_AND_SATURDAYS },
+]
+
+const workDaysList = [
+  { text: '月曜日', value: WORK_DAY_TYPE.MONDAY },
+  { text: '火曜日', value: WORK_DAY_TYPE.TUESDAY },
+  { text: '水曜日', value: WORK_DAY_TYPE.WEDNESDAY },
+  { text: '木曜日', value: WORK_DAY_TYPE.THURSDAY },
+  { text: '金曜日', value: WORK_DAY_TYPE.FRIDAY },
+  { text: '土曜日', value: WORK_DAY_TYPE.SATURDAY },
+  { text: '日曜日', value: WORK_DAY_TYPE.SUNDAY },
 ]
 
 const PopUp = () => {
   const [holidayType, setHolidayType] = useState(1)
   const [workHour, setWorkHour] = useState(8)
   const [includeFirstDay, setIncludeFirstDay] = useState(1)
+  const [workDays, setWorkDays] = useState([1, 2, 3, 4, 5, 6, 7])
 
   const setStorage = (payload: any) => {
     chrome.storage.sync.set(payload, function () {
@@ -39,6 +50,20 @@ const PopUp = () => {
     setStorage({ includeFirstDay: value })
   }
 
+  // 稼働日更新
+  const updateWorkDays = (value: number) => {
+    const result = workDays.includes(value)
+    if (result) {
+      const items = workDays.filter((v) => v !== value)
+      setWorkDays(items)
+      setStorage({ workDays: items })
+    } else {
+      const items = workDays.concat(value)
+      setWorkDays(items)
+      setStorage({ workDays: items })
+    }
+  }
+
   useEffect(() => {
     chrome.storage.sync.get(null, ((data) => {
       // 休日タイプをセット
@@ -53,6 +78,10 @@ const PopUp = () => {
       if (data.workHour) {
         setWorkHour(data.workHour)
       }
+      // 一週間の稼働日をセット
+      if (data.workDays) {
+        setWorkDays(data.workDays)
+      }
     }))
   }, [])
 
@@ -60,13 +89,21 @@ const PopUp = () => {
     <div className="popup">
       <Form>
         <div className="popup__item">
+          <div className="popup__item--title">1週間の稼働日</div>
+          <Form.Field>
+            {workDaysList.map((workDay) => {
+              return (
+                <Checkbox label={workDay.text} value={workDay.value} checked={workDays.includes(workDay.value)} onChange={(e: any, { value }) => updateWorkDays(Number(value))} className="popup__item__workday--checkbox" />
+              )
+            })
+            }
+          </Form.Field>
+        </div>
+        <div className="popup__item">
           <div className="popup__item--title">休日設定</div>
-          {holidayTypes.map(item => {
-            return(
-            <Form.Field>
-              <Radio value={item.value} checked={holidayType === item.value} label={item.label} onChange={(e, {value}: any) => updateHolidayType(Number(value))} />
-            </Form.Field>
-          )})}
+          <Menu compact>
+            <Select options={holidayTypes} value={holidayType} onChange={(e, { value }: any) => updateHolidayType(Number(value))} />
+          </Menu>
         </div>
         <div className="popup__item">
           <div className="popup__item--title">作業時間</div>

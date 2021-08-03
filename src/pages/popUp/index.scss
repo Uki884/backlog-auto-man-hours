@@ -11,5 +11,10 @@
       text-align: left;
       margin-bottom: 8px;
     }
+    &__workday {
+      &--checkbox {
+        margin-right: 8px;
+      }
+    }
   }
 }
