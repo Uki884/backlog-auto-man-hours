@@ -1,4 +1,5 @@
 # Backlog Auto Work Hours
+https://chrome.google.com/webstore/detail/backlog-auto-work-hours/ghpmidkclpbfnhaebjpglldpgfalhedc?hl=ja&
 
 backlogで開始日と期限日を計算して予定時間を自動で入力できるようになるChrome Extensionです。
 
